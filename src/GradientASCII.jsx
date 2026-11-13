@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 
 const CHARS = ' .,:-=+xX0S8#@';
 const COLORS = ['#071b50', '#123fc2', '#2878ff', '#9bcaff'];
