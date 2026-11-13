@@ -9,9 +9,28 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+      html,body{margin:0;min-height:100%;background:#0b0b10;color:#f4f2f8;font-family:system-ui,sans-serif}
+      .boot-screen{min-height:100vh;display:grid;place-items:center;padding:24px;box-sizing:border-box}
+      .boot-card{width:min(440px,100%);padding:28px;border:1px solid #ffffff20;border-radius:16px;background:#15151e;box-sizing:border-box}
+      .boot-brand{color:#b7a6ff;font-size:12px;font-weight:700;letter-spacing:2px}
+      .boot-card h1{font-size:26px;margin:14px 0 8px}
+      .boot-card p{color:#aaa6b5;line-height:1.6;font-size:14px}
+      .boot-loader{width:24px;height:24px;border:2px solid #ffffff25;border-top-color:#b7a6ff;border-radius:50%;animation:spin .8s linear infinite;margin-top:20px}
+      @keyframes spin{to{transform:rotate(360deg)}}
+    </style>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <main class="boot-screen">
+        <section class="boot-card">
+          <div class="boot-brand">BREEZE / STARTING UP</div>
+          <h1>Your space is getting ready.</h1>
+          <p>If this message stays here, the Breeze app script did not finish loading. Refresh once, then send me what you see.</p>
+          <div class="boot-loader" aria-label="Loading"></div>
+        </section>
+      </main>
+    </div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
