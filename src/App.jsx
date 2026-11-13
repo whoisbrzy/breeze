@@ -1,126 +1,95 @@
 import { useState } from 'react';
-import {
-  Activity, ArrowUpRight, AudioLines, Bot, ChevronDown, Command, Compass,
-  Gamepad2, Github, Globe2, Headphones, Image, LayoutDashboard, MessageSquareQuote,
-  Music2, Search, Settings2, ShieldCheck, Sparkles, Wallet, Zap, Menu, X,
-  CircleHelp, Plus, ExternalLink, Clock3, Radio, UserRound, WandSparkles
-} from 'lucide-react';
+import { ArrowRight, ArrowUpRight, AudioLines, Bot, Gamepad2, Github, Image, Menu, MessageSquareQuote, Music2, Radio, ShieldCheck, Sparkles, Wallet, WandSparkles, X, Zap } from 'lucide-react';
 
 const integrations = [
-  { name: 'Spotify', detail: 'Your listening, at a glance', icon: Music2, tone: 'green', category: 'Music', status: 'Connect' },
-  { name: 'Last.fm', detail: 'Scrobbles, charts and taste', icon: AudioLines, tone: 'red', category: 'Music', status: 'Connect' },
-  { name: 'Roblox', detail: 'Profiles, presence and stats', icon: Gamepad2, tone: 'blue', category: 'Gaming', status: 'Connect' },
-  { name: 'Fortnite', detail: 'Player stats and highlights', icon: Zap, tone: 'purple', category: 'Gaming', status: 'Connect' },
-  { name: 'GitHub', detail: 'Repositories and activity', icon: Github, tone: 'light', category: 'Developer', status: 'Connect' },
-  { name: 'Crypto', detail: 'Follow the markets you care about', icon: Wallet, tone: 'orange', category: 'Utilities', status: 'Connect' },
+  { name:'Spotify', description:'Your music, right where your friends are.', icon:Music2, tone:'spotify', category:'MUSIC' },
+  { name:'Last.fm', description:'Listening history, charts and stats.', icon:AudioLines, tone:'lastfm', category:'MUSIC' },
+  { name:'Roblox', description:'Players, profiles, games and presence.', icon:Gamepad2, tone:'roblox', category:'GAMING' },
+  { name:'Fortnite', description:'Player stats and highlights.', icon:Zap, tone:'fortnite', category:'GAMING' },
+  { name:'GitHub', description:'Repos, commits and developer activity.', icon:Github, tone:'github', category:'DEVELOPER' },
+  { name:'Crypto', description:'A quick glance at markets you follow.', icon:Wallet, tone:'crypto', category:'DISCOVER' }
 ];
-
+const features = [
+  { icon:Sparkles, title:'AI, within reach', text:'Get help, explore ideas and turn long conversations into clear answers.' },
+  { icon:Image, title:'A little more fun', text:'Find GIFs, make quote cards and add something extra to the chat.' },
+  { icon:Radio, title:'Your world, connected', text:'Bring updates and activity from platforms you already use into Discord.' },
+  { icon:ShieldCheck, title:'One simple place', text:'A thoughtful collection of everyday tools, without the clutter.' }
+];
 const commands = [
-  { name: '/gif', description: 'Find the perfect GIF for the moment.', icon: Image, tag: 'Fun' },
-  { name: '/quote', description: 'A little wisdom, whenever you need it.', icon: MessageSquareQuote, tag: 'Fun' },
-  { name: '/ask', description: 'Ask AI a question right inside Discord.', icon: Sparkles, tag: 'AI' },
-  { name: '/summarise', description: 'Turn a long message into the essentials.', icon: WandSparkles, tag: 'AI' },
+  { name:'/gif', text:'Find a GIF for the moment.', icon:Image, type:'FUN' },
+  { name:'/quote', text:'Turn a message into a shareable quote.', icon:MessageSquareQuote, type:'FUN' },
+  { name:'/ask', text:'Ask the Breeze AI assistant.', icon:Sparkles, type:'AI' },
+  { name:'/summarise', text:'Get the important parts, quickly.', icon:WandSparkles, type:'AI' }
+];
+const faqs = [
+  ['What is Breeze?','Breeze is a multipurpose Discord app that brings integrations, useful commands and everyday tools together.'],
+  ['Is Breeze free to use?','Breeze is being built with a free core experience in mind. Any future optional features will be explained clearly.'],
+  ['Which integrations are planned?','The first planned integrations include Spotify, Last.fm, Roblox, Fortnite, GitHub and crypto market information.'],
+  ['How do I get started?','Once the Discord app is ready, you will be able to add it to your account and explore its commands.']
 ];
 
-function App() {
-  const [active, setActive] = useState('Overview');
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const [query, setQuery] = useState('');
-  const [connected, setConnected] = useState([]);
-  const [toast, setToast] = useState('');
-
-  const nav = [
-    { label: 'Overview', icon: LayoutDashboard },
-    { label: 'Integrations', icon: Compass },
-    { label: 'Commands', icon: Command },
-  ];
-
-  const notify = (message) => {
-    setToast(message);
-    window.clearTimeout(window.__breezeToast);
-    window.__breezeToast = window.setTimeout(() => setToast(''), 2600);
-  };
-
-  const visibleIntegrations = integrations.filter(item =>
-    (item.name + item.detail + item.category).toLowerCase().includes(query.toLowerCase())
-  );
-
-  const sidebar = (
-    <>
-      <div className="brand">
-        <div className="brand-mark"><span>b</span></div>
-        <span className="brand-name">breeze<span className="brand-period">.</span></span>
-        <button className="mobile-close icon-button" onClick={() => setMobileOpen(false)} aria-label="Close menu"><X size={19}/></button>
-      </div>
-      <div className="workspace-label">WORKSPACE</div>
-      <button className="workspace-switch" onClick={() => notify('Workspace switcher coming soon')}>
-        <div className="workspace-avatar">B</div>
-        <span><strong>My Breeze</strong><small>Personal space</small></span>
-        <ChevronDown size={15} className="muted-icon"/>
-      </button>
-      <div className="nav-label">MENU</div>
-      <nav className="side-nav">
-        {nav.map(item => <button key={item.label} className={active === item.label ? 'nav-item active' : 'nav-item'} onClick={() => {setActive(item.label); setMobileOpen(false);}}>
-          <item.icon size={17}/><span>{item.label}</span>{item.label === 'Integrations' && <span className="nav-count">{integrations.length}</span>}
-        </button>)}
-      </nav>
-      <div className="nav-label tools-label">YOUR SPACE</div>
-      <div className="side-note"><div className="side-note-icon"><Bot size={16}/></div><div><strong>Made for your Discord</strong><p>Your interests, tools and little moments — all together.</p></div></div>
-      <div className="sidebar-bottom">
-        <button className="nav-item" onClick={() => notify('Settings are coming soon')}><Settings2 size={17}/><span>Settings</span></button>
-        <button className="nav-item" onClick={() => notify('Help centre coming soon')}><CircleHelp size={17}/><span>Help & support</span></button>
-        <div className="profile-mini"><div className="profile-avatar">B</div><div className="profile-copy"><strong>Your profile</strong><small>Discord account not linked</small></div><ChevronDown size={15}/></div>
-      </div>
-    </>
-  );
-
-  return (
-    <div className="app-shell">
-      <aside className="sidebar">{sidebar}</aside>
-      {mobileOpen && <div className="mobile-scrim" onClick={() => setMobileOpen(false)}><aside className="mobile-sidebar" onClick={e => e.stopPropagation()}>{sidebar}</aside></div>}
-      <main className="main-area">
-        <header className="topbar">
-          <div className="topbar-left"><button className="mobile-menu icon-button" onClick={() => setMobileOpen(true)} aria-label="Open menu"><Menu size={20}/></button><span className="breadcrumb">Workspace</span><span className="crumb-slash">/</span><strong>{active}</strong></div>
-          <div className="topbar-right"><div className="status-pill"><span className="status-dot"/> All systems operational</div><button className="icon-button top-help" onClick={() => notify('Help centre coming soon')} aria-label="Help"><CircleHelp size={18}/></button><div className="top-avatar">B</div></div>
-        </header>
-
-        <div className="page-content">
-          {active === 'Overview' && <>
-            <section className="welcome-row">
-              <div><div className="eyebrow"><span className="eyebrow-line"/> YOUR PERSONAL DISCORD COMPANION</div><h1>Your space,<br/><span>connected.</span></h1><p className="welcome-copy">A little bit of everything you love, brought together in one place.</p></div>
-              <div className="welcome-art" aria-hidden="true"><div className="orbit orbit-one"/><div className="orbit orbit-two"/><div className="art-core"><span>b.</span></div><div className="orbit-node node-one"><Music2 size={17}/></div><div className="orbit-node node-two"><Gamepad2 size={17}/></div><div className="orbit-node node-three"><Github size={17}/></div><div className="orbit-node node-four"><Sparkles size={17}/></div></div>
-            </section>
-
-            <section className="quick-stats">
-              <div className="stat-card"><div className="stat-icon violet"><Globe2 size={17}/></div><div><span className="stat-label">Integrations</span><strong>{integrations.length}</strong><small>Ready to connect</small></div></div>
-              <div className="stat-card"><div className="stat-icon blue"><Command size={17}/></div><div><span className="stat-label">Commands</span><strong>{commands.length}+</strong><small>Useful little tools</small></div></div>
-              <div className="stat-card"><div className="stat-icon green"><Activity size={17}/></div><div><span className="stat-label">Connected</span><strong>{connected.length}</strong><small>Your linked services</small></div></div>
-            </section>
-
-            <section className="section-block">
-              <div className="section-heading"><div><div className="eyebrow small-eyebrow">MAKE IT YOURS</div><h2>Your integrations</h2><p>Bring your favourite platforms into Breeze.</p></div><button className="text-link" onClick={() => setActive('Integrations')}>Explore all <ArrowUpRight size={15}/></button></div>
-              <div className="integration-grid">{integrations.slice(0,4).map(item => <IntegrationCard key={item.name} item={item} connected={connected.includes(item.name)} onConnect={() => {setConnected(prev => prev.includes(item.name) ? prev.filter(x => x !== item.name) : [...prev,item.name]); notify(item.name + (connected.includes(item.name) ? ' disconnected' : ' marked for setup'));}}/>)}</div>
-            </section>
-
-            <section className="bottom-grid">
-              <div className="panel command-panel"><div className="panel-heading"><div><div className="eyebrow small-eyebrow">AT YOUR FINGERTIPS</div><h2>Commands to explore</h2></div><div className="panel-heading-icon"><Bot size={18}/></div></div><div className="command-list">{commands.slice(0,3).map(item => <div className="command-row" key={item.name}><div className="command-icon"><item.icon size={17}/></div><div className="command-info"><strong>{item.name}</strong><span>{item.description}</span></div><span className={'command-tag ' + item.tag.toLowerCase()}>{item.tag}</span></div>)}</div><button className="panel-footer-link" onClick={() => setActive('Commands')}>Browse commands <ArrowUpRight size={14}/></button></div>
-              <div className="panel getting-started"><div className="getting-icon"><Sparkles size={19}/></div><div className="eyebrow small-eyebrow">A FRESH START</div><h2>Make Breeze<br/>feel like yours.</h2><p>Connect the services you use, discover commands and bring your Discord world together.</p><button className="primary-button" onClick={() => setActive('Integrations')}>Get started <ArrowUpRight size={16}/></button><div className="getting-decoration">b.</div></div>
-            </section>
-          </>}
-
-          {active === 'Integrations' && <section className="inner-page"><div className="eyebrow"><span className="eyebrow-line"/> YOUR DIGITAL WORLD</div><h1 className="inner-title">Everything, <span>in sync.</span></h1><p className="inner-description">Choose the services you want to bring into your Breeze experience.</p><div className="search-wrap"><Search size={17}/><input value={query} onChange={e => setQuery(e.target.value)} placeholder="Search integrations..."/></div><div className="integration-grid full-grid">{visibleIntegrations.map(item => <IntegrationCard key={item.name} item={item} connected={connected.includes(item.name)} onConnect={() => {setConnected(prev => prev.includes(item.name) ? prev.filter(x => x !== item.name) : [...prev,item.name]); notify(item.name + (connected.includes(item.name) ? ' disconnected' : ' marked for setup'));}}/>)}</div>{visibleIntegrations.length === 0 && <div className="empty-state">No integrations match that search.</div>}</section>}
-
-          {active === 'Commands' && <section className="inner-page"><div className="eyebrow"><span className="eyebrow-line"/> THE BREEZE TOOLBOX</div><h1 className="inner-title">Small commands.<br/><span>Big possibilities.</span></h1><p className="inner-description">A growing collection of useful, creative and AI-powered Discord commands.</p><div className="command-catalog">{commands.map(item => <div className="catalog-card" key={item.name}><div className="catalog-icon"><item.icon size={19}/></div><div className="catalog-copy"><div className="catalog-title"><strong>{item.name}</strong><span className={'command-tag ' + item.tag.toLowerCase()}>{item.tag}</span></div><p>{item.description}</p></div><ArrowUpRight size={17} className="catalog-arrow"/></div>)}</div><div className="coming-note"><Sparkles size={17}/><span>More commands are on the way. Breeze is just getting started.</span></div></section>}
-          <footer className="page-footer"><span>© 2026 Breeze</span><span>Made for your Discord world <span className="footer-heart">✳</span></span></footer>
+export default function App() {
+  const [menuOpen,setMenuOpen] = useState(false);
+  const [faqOpen,setFaqOpen] = useState(0);
+  const close = () => setMenuOpen(false);
+  return <div className="site-shell">
+    <header className="site-header">
+      <a className="wordmark" href="#home" onClick={close}><span className="brand-symbol">b</span><span>breeze<span className="wordmark-dot">.</span></span></a>
+      <button className="mobile-toggle" onClick={()=>setMenuOpen(!menuOpen)} aria-label="Toggle navigation">{menuOpen?<X size={20}/>:<Menu size={20}/>}</button>
+      <nav className={menuOpen?'site-nav open':'site-nav'}><a href="#integrations" onClick={close}>Integrations</a><a href="#features" onClick={close}>Features</a><a href="#commands" onClick={close}>Commands</a><a href="#faq" onClick={close}>FAQ</a></nav>
+      <a className="header-cta" href="#get-started">Add to Discord <ArrowUpRight size={15}/></a>
+    </header>
+    <main id="home">
+      <section className="hero section-wrap">
+        <div className="hero-copy">
+          <div className="announcement"><i/> A new kind of Discord companion <ArrowUpRight size={13}/></div>
+          <h1>More of your world.<br/><span>Less switching around.</span></h1>
+          <p className="hero-description">Your music, games, socials and everyday tools — all coming together in one little corner of Discord.</p>
+          <div className="hero-actions"><a className="button-primary" href="#get-started">Get started <ArrowRight size={16}/></a><a className="button-secondary" href="#integrations">Explore Breeze <ArrowUpRight size={15}/></a></div>
+          <div className="hero-proof"><div className="proof-avatars"><span>B</span><span>✳</span><span>⌘</span></div><p><strong>One app.</strong> A whole lot to explore.</p></div>
         </div>
-      </main>
-      {toast && <div className="toast"><ShieldCheck size={17}/>{toast}</div>}
-    </div>
-  );
+        <div className="hero-visual">
+          <div className="visual-glow"/>
+          <div className="floating-chip chip-music"><span className="mini-icon spotify"><Music2 size={15}/></span><span><b>Now playing</b><small>Something good</small></span><AudioLines size={17}/></div>
+          <div className="preview-window">
+            <div className="preview-top"><div className="preview-dots"><i/><i/><i/></div><span>breeze / your space</span><div className="preview-live"><i/> LIVE</div></div>
+            <div className="preview-content">
+              <div className="preview-greeting"><span>YOUR PERSONAL SPACE</span><b>Hey there<span>.</span></b><small>Here's a little look at your world.</small></div>
+              <div className="preview-cards">
+                <div className="preview-card"><div className="preview-card-icon spotify"><Music2 size={16}/></div><span>LISTENING</span><b>On repeat</b><small>Spotify · connected</small><div className="equalizer"><i/><i/><i/><i/><i/><i/><i/><i/><i/><i/><i/></div></div>
+                <div className="preview-card"><div className="preview-card-icon roblox"><Gamepad2 size={16}/></div><span>GAMING</span><b>Game on</b><small>Roblox · ready</small><div className="game-squares">{Array.from({length:9},(_,i)=><i key={i}/>)}</div></div>
+              </div>
+              <div className="preview-command"><div className="command-spark"><Sparkles size={16}/></div><div><b>/ask</b><small>Ask Breeze anything...</small></div><ArrowUpRight size={15}/></div>
+              <div className="preview-bottom"><span><i/> YOUR SPACE, ALL TOGETHER</span><span>01 / 04</span></div>
+            </div>
+          </div>
+          <div className="floating-chip chip-github"><span className="mini-icon github"><Github size={15}/></span><span><b>Build something</b><small>GitHub activity</small></span><ArrowUpRight size={14}/></div>
+          <div className="hero-stamp"><span>MADE FOR</span><b>YOUR<br/>DISCORD</b><span className="stamp-star">✳</span></div>
+        </div>
+        <div className="hero-bottom-line"><span>ONE PLACE FOR YOUR FAVOURITE THINGS</span><span>SCROLL TO EXPLORE ↓</span></div>
+      </section>
+      <section className="integrations-section section-wrap" id="integrations">
+        <div className="section-topline"><span>01 — YOUR WORLD, CONNECTED</span><span>THE GOOD STUFF</span></div>
+        <div className="section-heading"><h2>All the things you love.<br/><em>Right here.</em></h2><p>From what you're listening to, to what you're playing and building. Breeze brings your favourite platforms a little closer.</p></div>
+        <div className="integration-grid">{integrations.map(item=><article className="integration-card" key={item.name}><div className={'integration-icon '+item.tone}><item.icon size={21}/></div><div className="integration-card-content"><span>{item.category}</span><h3>{item.name}</h3><p>{item.description}</p></div><div className="integration-arrow"><ArrowUpRight size={17}/></div></article>)}</div>
+        <div className="integrations-foot"><span className="foot-spark">✳</span><span>And there's more room for your world to grow.</span><i/></div>
+      </section>
+      <section className="features-section" id="features"><div className="section-wrap features-wrap">
+        <div className="section-topline"><span>02 — A LITTLE BIT OF EVERYTHING</span><span>BUILT TO BE USEFUL</span></div>
+        <div className="features-intro"><div><span className="tiny-label">NOT JUST ANOTHER BOT</span><h2>Small things.<br/><em>Big convenience.</em></h2></div><p>Less hopping between apps. More time doing the things you actually came to Discord for.</p></div>
+        <div className="features-grid">{features.map((f,i)=><article className="feature-card" key={f.title}><div className="feature-number">0{i+1}</div><div className="feature-icon"><f.icon size={21}/></div><h3>{f.title}</h3><p>{f.text}</p><span className="feature-corner">↗</span></article>)}</div>
+      </div></section>
+      <section className="commands-section section-wrap" id="commands">
+        <div className="section-topline"><span>03 — THE BREEZE TOOLBOX</span><span>READY WHEN YOU ARE</span></div>
+        <div className="commands-layout"><div className="commands-intro"><span className="tiny-label">JUST TYPE A COMMAND</span><h2>A shortcut to<br/><em>something useful.</em></h2><p>Handy little commands for everyday moments, curious moments and just-for-fun moments.</p><a href="#get-started" className="inline-link">See what Breeze can do <ArrowUpRight size={15}/></a></div>
+          <div className="command-board">{commands.map((c,i)=><div className="command-item" key={c.name}><div className="command-index">0{i+1}</div><div className="command-icon"><c.icon size={18}/></div><div className="command-detail"><b>{c.name}</b><span>{c.text}</span></div><span className={'command-type '+c.type.toLowerCase()}>{c.type}</span><ArrowUpRight size={16} className="command-arrow"/></div>)}</div>
+        </div>
+      </section>
+      <section className="faq-section section-wrap" id="faq"><div className="section-topline"><span>04 — GOOD TO KNOW</span><span>THE FAQ</span></div>
+        <div className="faq-layout"><div><span className="tiny-label">A FEW QUICK ANSWERS</span><h2>Curious?<br/><em>We've got you.</em></h2></div><div className="faq-list">{faqs.map(([q,a],i)=><div className={faqOpen===i?'faq-item expanded':'faq-item'} key={q}><button onClick={()=>setFaqOpen(faqOpen===i?-1:i)}><span>{q}</span><b>{faqOpen===i?'−':'+'}</b></button>{faqOpen===i&&<p>{a}</p>}</div>)}</div></div>
+      </section>
+      <section className="final-cta section-wrap" id="get-started"><div className="cta-orb orb-a"/><div className="cta-orb orb-b"/><div className="cta-content"><span className="tiny-label">YOUR DISCORD, WITH A LITTLE MORE BREEZE</span><h2>Ready to bring it<br/><em>all together?</em></h2><p>Breeze is getting ready to make your Discord experience feel a little more you.</p><a className="button-dark" href="#home">Back to the top <ArrowUpRight size={16}/></a></div><div className="cta-mark">b<span>.</span></div></section>
+    </main>
+    <footer className="site-footer section-wrap"><a className="wordmark footer-wordmark" href="#home"><span className="brand-symbol">b</span><span>breeze<span className="wordmark-dot">.</span></span></a><span className="footer-note">A little bit of everything, in one place.</span><div className="footer-links"><a href="#integrations">Integrations</a><a href="#commands">Commands</a><a href="#faq">FAQ</a></div><span className="copyright">© 2026 BREEZE</span></footer>
+  </div>;
 }
-
-function IntegrationCard({ item, connected, onConnect }) {
-  return <article className="integration-card"><div className={'integration-icon ' + item.tone}><item.icon size={21}/></div><div className="integration-card-body"><div className="integration-title-row"><h3>{item.name}</h3><span className="integration-category">{item.category}</span></div><p>{item.detail}</p><button className={connected ? 'connect-button connected' : 'connect-button'} onClick={onConnect}>{connected ? 'Added to your space' : 'Explore integration'}<ArrowUpRight size={14}/></button></div></article>;
-}
-
-export default App;
