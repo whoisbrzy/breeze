@@ -55,7 +55,7 @@ const commands = [
   command("fortnite", "Look up public Fortnite player stats.")
     .addStringOption((o) => o.setName("username").setDescription("Epic display name").setRequired(true).setMaxLength(32))
     .addStringOption((o) => o.setName("platform").setDescription("Platform").setRequired(true).addChoices(
-      { name: "PC", value: "keyboard" }, { name: "PlayStation", value: "gamepad" }, { name: "Xbox", value: "gamepad" }
+      { name: "PC", value: "epic" }, { name: "PlayStation", value: "psn" }, { name: "Xbox", value: "xbl" }
     )),
 ].map((item) => item.toJSON());
 
@@ -232,7 +232,7 @@ async function handleCommand(interaction) {
     await interaction.deferReply();
     const username = interaction.options.getString("username", true);
     const platform = interaction.options.getString("platform", true);
-    const data = await api(`https://fortnite-api.com/v2/stats/br/v2?name=${encodeURIComponent(username)}&accountType=epic`, {
+    const data = await api(`https://fortnite-api.com/v2/stats/br/v2?name=${encodeURIComponent(username)}&accountType=${platform}`, {
       headers: { Authorization: process.env.FORTNITE_API_KEY },
     });
     const stats = data.data?.stats?.all?.overall;
@@ -244,7 +244,7 @@ async function handleCommand(interaction) {
         { name: "Win rate", value: `${Number(stats.winRate || 0).toFixed(1)}%`, inline: true },
         { name: "K/D", value: Number(stats.kd || 0).toFixed(2), inline: true },
         { name: "Kills", value: String(stats.kills ?? 0), inline: true },
-      ).setFooter({ text: `Fortnite stats • Requested platform: ${platform === "keyboard" ? "PC" : "Console"}` });
+      ).setFooter({ text: `Fortnite stats • Requested platform: ${platform === "epic" ? "PC" : platform === "psn" ? "PlayStation" : "Xbox"}` });
     await interaction.editReply({ embeds: [embed] });
   }
 }
