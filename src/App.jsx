@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { ArrowRight, ArrowUpRight, AudioLines, Bot, Gamepad2, Github, Image, Menu, MessageSquareQuote, Music2, Radio, ShieldCheck, Sparkles, Wallet, WandSparkles, X, Zap } from 'lucide-react';
 
 const integrations = [
